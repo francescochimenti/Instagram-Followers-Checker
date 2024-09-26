@@ -28,25 +28,25 @@ const App = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-white min-h-screen p-8">
+    <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white min-h-screen p-8">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-center mb-10">
-          <Instagram className="text-pink-500 mr-3" size={40} />
-          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500">
+          <Instagram className="text-white mr-3" size={40} />
+          <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">
             Non-Reciprocal Followers
           </h1>
         </div>
 
-        <div className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl p-8 mb-10 shadow-2xl">
+        <div className="bg-white bg-opacity-5 backdrop-filter backdrop-blur-lg rounded-xl p-8 mb-10 shadow-2xl">
           <div className="flex justify-between items-center">
-            <div className="flex items-center bg-blue-500 bg-opacity-30 rounded-lg p-4">
-              <Users className="text-blue-300 mr-3" size={28} />
+            <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-4">
+              <Users className="text-gray-300 mr-3" size={28} />
               <span className="text-2xl font-semibold">
                 Displayed: {displayedUsers.length}
               </span>
             </div>
-            <div className="flex items-center bg-red-500 bg-opacity-30 rounded-lg p-4">
-              <UserX className="text-red-300 mr-3" size={28} />
+            <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-4">
+              <UserX className="text-gray-300 mr-3" size={28} />
               <span className="text-2xl font-semibold">
                 Hidden: {hiddenUsers.length}
               </span>
@@ -61,7 +61,7 @@ const App = () => {
                 href={`https://instagram.com/${user}`}
                 target="_blank"
                 rel="noreferrer"
-                className="block bg-white bg-opacity-10 backdrop-filter backdrop-blur-md rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-opacity-20"
+                className="block bg-white bg-opacity-5 backdrop-filter backdrop-blur-md rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-opacity-10"
                 onClick={(e) => {
                   e.preventDefault();
                   hideUser(user);
@@ -72,13 +72,13 @@ const App = () => {
                   <div className="flex justify-between items-center">
                     <span className="text-xl font-bold">{user}</span>
                     <UserCheck
-                      className="text-green-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       size={24}
                     />
                   </div>
-                  <p className="text-sm text-gray-300 mt-2">Click to hide</p>
+                  <p className="text-sm text-gray-400 mt-2">Click to hide</p>
                 </div>
-                <div className="bg-gradient-to-r from-pink-500 to-yellow-500 h-1 w-0 group-hover:w-full transition-all duration-300"></div>
+                <div className="bg-gradient-to-r from-gray-500 to-white h-1 w-0 group-hover:w-full transition-all duration-300"></div>
               </a>
             </li>
           ))}
