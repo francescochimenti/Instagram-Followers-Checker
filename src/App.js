@@ -11,14 +11,13 @@ const App = () => {
 
   useEffect(() => {
     const nonReciprocal = following.filter((follow) => {
-      const followingValue = follow.string_list_data[0].value.toLowerCase();
+      const followingValue = follow.string_list_data[0].value;
       return !followers.some(
-        (follower) =>
-          follower.string_list_data[0].value.toLowerCase() === followingValue
+        (follower) => follower.string_list_data[0].value === followingValue
       );
     });
     setDisplayedUsers(
-      nonReciprocal.map((user) => user.string_list_data[0].value.toLowerCase())
+      nonReciprocal.map((user) => user.string_list_data[0].value)
     );
   }, [followers, following]);
 
