@@ -1,6 +1,6 @@
 # Instagram Follower Management Tool
 
-**A simple tool to identify users you follow on Instagram who do not follow you back.**
+A simple tool to identify users you follow on Instagram who do not follow you back.
 
 ## Features
 
@@ -11,34 +11,38 @@
 
 1. **Download Your Instagram Data:**
 
-   - Go to your Instagram account settings and request to download your data.
-   - Specifically, download the data for your followers and the accounts you follow in **JSON format**.
+   - Go to your Instagram app or website and navigate to **Account Center**.
+   - Select **Your Information and Permissions**.
+   - Click on **Download Your Information**.
+   - Choose **Download or Transfer Information**.
+   - Under **Some of Your Information**, select **Contacts**.
+   - Choose **Followers** and **Followed Accounts/Pages**.
+   - Click on **Download to Device**.
+   - Set the **Date Range** to **All Time**.
+   - Select the **Format** as **JSON**.
+   - Finally, click on **Create File**. You will receive a notification when your data is ready for download.
 
-2. **Prepare the Data:**
+2. **Upload Your Data:**
 
-   - After downloading the data, navigate to the JSON files for your **followers** and the accounts you **follow**.
-   - You should have two files: `followers_1.json` and `following.json`.
+   - After downloading, unzip the data file.
+   - Locate the following JSON files in the unzipped folder:
+     - **followers_1.json:** Contains your list of followers.
+     - **following.json:** Contains the accounts you follow.
 
-3. **Set Up the Project:**
+3. **File Requirements:**
 
-   - Inside the `src` folder of the project, create a folder named `data`.
-   - Move the `followers_1.json` and `following.json` files into this `data` folder.
+   - Ensure that the JSON files are structured correctly to ensure accurate processing.
 
-4. **Install Dependencies:**
+4. **Using the App:**
 
-   - Open your terminal in the project directory and run the following command to install the necessary dependencies:
+   - Open the app and use the provided input fields to upload both the **followers** and **following** JSON files.
+   - Click the **Confirm and Process** button to process the data.
 
-     ```bash
-     npm install
-     ```
+5. **Interacting with the Results:**
 
-5. **Run the Application:**
+   - The app will display users you follow who do not follow you back.
+   - Click on any displayed name to open their Instagram profile directly in your browser.
 
-   - After installing the dependencies, start the web app by running:
+## Link to the App
 
-     ```bash
-     npm start
-     ```
-
-6. **Interact with the Application:**
-   - Once the app is running, simply click on any of the names listed, and their Instagram profile will open directly in your browser.
+You can access the tool at: [Click here](https://igfollowerschecker.netlify.app).

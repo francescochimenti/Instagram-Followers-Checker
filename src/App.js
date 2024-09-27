@@ -18,30 +18,27 @@ const App = () => {
     }
   };
 
-  const processFiles = () => {
-    const readFile = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(JSON.parse(e.target.result));
-        reader.onerror = (error) => reject(error);
-        reader.readAsText(file);
-      });
-    };
+  const readFile = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(JSON.parse(e.target.result));
+      reader.onerror = (error) => reject(error);
+      reader.readAsText(file);
+    });
+  };
 
-    Promise.all([
-      followersFile ? readFile(followersFile) : Promise.resolve([]),
-      followingFile
-        ? readFile(followingFile)
-        : Promise.resolve({ relationships_following: [] }),
-    ])
-      .then(([followersData, followingData]) => {
-        setFollowers(followersData);
-        setFollowing(followingData.relationships_following);
-      })
-      .catch((error) => {
-        console.error("Error processing files:", error);
-        // Qui potresti aggiungere una gestione degli errori più robusta
-      });
+  const processFiles = async () => {
+    try {
+      const followersData = followersFile ? await readFile(followersFile) : [];
+      const followingData = followingFile
+        ? await readFile(followingFile)
+        : { relationships_following: [] };
+
+      setFollowers(followersData);
+      setFollowing(followingData.relationships_following);
+    } catch (error) {
+      console.error("Error processing files:", error);
+    }
   };
 
   useEffect(() => {
@@ -64,15 +61,17 @@ const App = () => {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen p-8">
+    <div className="bg-black min-h-screen p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
-        <div className="flex items-center justify-center mb-10">
-          <h1 className="text-5xl font-extrabold">Non-Reciprocal Followers</h1>
+        <div className="flex items-center justify-center mb-6 sm:mb-10">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-yellow-400 text-center">
+            Non-Reciprocal Followers
+          </h1>
         </div>
 
-        <div className="bg-white bg-opacity-10 rounded-xl p-8 mb-10 shadow-2xl">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center">
+        <div className="bg-white bg-opacity-5 rounded-xl p-4 sm:p-8 mb-6 sm:mb-10 shadow-2xl">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 space-y-4 sm:space-y-0 sm:space-x-4">
+            <div className="flex items-center w-full sm:w-auto">
               <input
                 type="file"
                 id="followers-upload"
@@ -81,16 +80,18 @@ const App = () => {
               />
               <label
                 htmlFor="followers-upload"
-                className="flex items-center bg-white bg-opacity-10 rounded-lg p-4 cursor-pointer hover:bg-opacity-20 transition-all duration-300"
+                className="flex items-center justify-center w-full sm:w-auto bg-yellow-400 text-black rounded-lg p-3 cursor-pointer hover:bg-yellow-300 transition-all duration-300"
               >
-                <Upload className="text-white mr-3" size={28} />
-                <span className="text-lg font-semibold">Upload Followers</span>
+                <Upload className="mr-2" size={20} />
+                <span className="text-sm sm:text-base font-semibold">
+                  Upload Followers
+                </span>
               </label>
               {followersFile && (
-                <Check className="text-green-500 ml-2" size={24} />
+                <Check className="text-yellow-400 ml-2" size={20} />
               )}
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center w-full sm:w-auto">
               <input
                 type="file"
                 id="following-upload"
@@ -99,68 +100,72 @@ const App = () => {
               />
               <label
                 htmlFor="following-upload"
-                className="flex items-center bg-white bg-opacity-10 rounded-lg p-4 cursor-pointer hover:bg-opacity-20 transition-all duration-300"
+                className="flex items-center justify-center w-full sm:w-auto bg-yellow-400 text-black rounded-lg p-3 cursor-pointer hover:bg-yellow-300 transition-all duration-300"
               >
-                <Upload className="text-white mr-3" size={28} />
-                <span className="text-lg font-semibold">Upload Following</span>
+                <Upload className="mr-2" size={20} />
+                <span className="text-sm sm:text-base font-semibold">
+                  Upload Following
+                </span>
               </label>
               {followingFile && (
-                <Check className="text-green-500 ml-2" size={24} />
+                <Check className="text-yellow-400 ml-2" size={20} />
               )}
             </div>
           </div>
           <div className="flex justify-center mt-4">
             <button
               onClick={processFiles}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+              className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-2 px-4 sm:py-3 sm:px-6 rounded-full transition-colors duration-300 transform hover:scale-105 text-sm sm:text-base"
               disabled={!followersFile || !followingFile}
             >
-              Conferma e Processa File
+              Confirm and Process
             </button>
           </div>
-          <div className="flex justify-between items-center mt-6">
-            <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-4">
-              <Users className="text-white mr-3" size={28} />
-              <span className="text-2xl font-semibold">
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-4 sm:mt-6 space-y-4 sm:space-y-0">
+            <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-3 w-full sm:w-auto">
+              <Users className="text-yellow-400 mr-2" size={20} />
+              <span className="text-lg sm:text-xl font-semibold text-white">
                 Displayed: {displayedUsers.length}
               </span>
             </div>
-            <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-4">
-              <UserX className="text-white mr-3" size={28} />
-              <span className="text-2xl font-semibold">
+            <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-3 w-full sm:w-auto">
+              <UserX className="text-yellow-400 mr-2" size={20} />
+              <span className="text-lg sm:text-xl font-semibold text-white">
                 Unfollowed: {hiddenUsers.length}
               </span>
             </div>
           </div>
         </div>
 
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {displayedUsers.map((user, index) => (
             <li key={index} className="group">
               <a
                 href={`https://instagram.com/${user}`}
                 target="_blank"
                 rel="noreferrer"
-                className="block bg-white bg-opacity-10 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-opacity-20"
+                className="block bg-white bg-opacity-5 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-opacity-10"
                 onClick={(e) => {
                   e.preventDefault();
                   hideUser(user);
                   window.open(`https://instagram.com/${user}`, "_blank");
                 }}
               >
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-xl font-bold">{user}</span>
+                    <span className="text-lg sm:text-xl font-bold text-yellow-400">
+                      {user}
+                    </span>
                     <UserCheck
-                      className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      size={24}
+                      className="text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                      size={20}
                     />
                   </div>
-                  <p className="text-sm text-white opacity-70 mt-2">
+                  <p className="text-xs sm:text-sm text-white opacity-70 mt-2">
                     Click to open profile
                   </p>
                 </div>
-                <div className="bg-white h-1 w-0 group-hover:w-full transition-all duration-300"></div>
+                <div className="bg-yellow-400 h-1 w-0 group-hover:w-full transition-all duration-300"></div>
               </a>
             </li>
           ))}
