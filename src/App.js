@@ -1,24 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { UserX, UserCheck, Users } from "lucide-react";
-import followersData from "./data/followers_1.json";
-import followingData from "./data/following.json";
+import { UserX, UserCheck, Users, Upload, Check } from "lucide-react";
 
 const App = () => {
-  const [followers] = useState(followersData);
-  const [following] = useState(followingData.relationships_following);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
   const [hiddenUsers, setHiddenUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
+  const [followersFile, setFollowersFile] = useState(null);
+  const [followingFile, setFollowingFile] = useState(null);
+
+  const handleFileUpload = (event, type) => {
+    const file = event.target.files[0];
+    if (type === "followers") {
+      setFollowersFile(file);
+    } else if (type === "following") {
+      setFollowingFile(file);
+    }
+  };
+
+  const processFiles = () => {
+    const readFile = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(JSON.parse(e.target.result));
+        reader.onerror = (error) => reject(error);
+        reader.readAsText(file);
+      });
+    };
+
+    Promise.all([
+      followersFile ? readFile(followersFile) : Promise.resolve([]),
+      followingFile
+        ? readFile(followingFile)
+        : Promise.resolve({ relationships_following: [] }),
+    ])
+      .then(([followersData, followingData]) => {
+        setFollowers(followersData);
+        setFollowing(followingData.relationships_following);
+      })
+      .catch((error) => {
+        console.error("Error processing files:", error);
+        // Qui potresti aggiungere una gestione degli errori più robusta
+      });
+  };
 
   useEffect(() => {
-    const nonReciprocal = following.filter((follow) => {
-      const followingValue = follow.string_list_data[0].value;
-      return !followers.some(
-        (follower) => follower.string_list_data[0].value === followingValue
+    if (followers.length && following.length) {
+      const nonReciprocal = following.filter((follow) => {
+        const followingValue = follow.string_list_data[0].value;
+        return !followers.some(
+          (follower) => follower.string_list_data[0].value === followingValue
+        );
+      });
+      setDisplayedUsers(
+        nonReciprocal.map((user) => user.string_list_data[0].value)
       );
-    });
-    setDisplayedUsers(
-      nonReciprocal.map((user) => user.string_list_data[0].value)
-    );
+    }
   }, [followers, following]);
 
   const hideUser = (user) => {
@@ -34,7 +71,54 @@ const App = () => {
         </div>
 
         <div className="bg-white bg-opacity-10 rounded-xl p-8 mb-10 shadow-2xl">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-6">
+            <div className="flex items-center">
+              <input
+                type="file"
+                id="followers-upload"
+                className="hidden"
+                onChange={(e) => handleFileUpload(e, "followers")}
+              />
+              <label
+                htmlFor="followers-upload"
+                className="flex items-center bg-white bg-opacity-10 rounded-lg p-4 cursor-pointer hover:bg-opacity-20 transition-all duration-300"
+              >
+                <Upload className="text-white mr-3" size={28} />
+                <span className="text-lg font-semibold">Upload Followers</span>
+              </label>
+              {followersFile && (
+                <Check className="text-green-500 ml-2" size={24} />
+              )}
+            </div>
+            <div className="flex items-center">
+              <input
+                type="file"
+                id="following-upload"
+                className="hidden"
+                onChange={(e) => handleFileUpload(e, "following")}
+              />
+              <label
+                htmlFor="following-upload"
+                className="flex items-center bg-white bg-opacity-10 rounded-lg p-4 cursor-pointer hover:bg-opacity-20 transition-all duration-300"
+              >
+                <Upload className="text-white mr-3" size={28} />
+                <span className="text-lg font-semibold">Upload Following</span>
+              </label>
+              {followingFile && (
+                <Check className="text-green-500 ml-2" size={24} />
+              )}
+            </div>
+          </div>
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={processFiles}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition-colors duration-300"
+              disabled={!followersFile || !followingFile}
+            >
+              Conferma e Processa File
+            </button>
+          </div>
+          <div className="flex justify-between items-center mt-6">
             <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-4">
               <Users className="text-white mr-3" size={28} />
               <span className="text-2xl font-semibold">
