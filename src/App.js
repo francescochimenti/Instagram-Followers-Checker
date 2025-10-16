@@ -44,20 +44,27 @@ const App = () => {
   useEffect(() => {
     if (followers.length && following.length) {
       const nonReciprocal = following.filter((follow) => {
-        const followingValue = follow.string_list_data[0].value;
-        return !followers.some(
-          (follower) => follower.string_list_data[0].value === followingValue
-        );
+        const followingValue =
+          follow.string_list_data?.[0]?.value || follow.title;
+        return !followers.some((follower) => {
+          const followerValue =
+            follower.string_list_data?.[0]?.value || follower.title;
+          return followerValue === followingValue;
+        });
       });
+
       setDisplayedUsers(
-        nonReciprocal.map((user) => user.string_list_data[0].value)
+        nonReciprocal.map((user) => ({
+          username: user.string_list_data?.[0]?.value || user.title,
+          href: user.string_list_data?.[0]?.href || null,
+        }))
       );
     }
   }, [followers, following]);
 
-  const hideUser = (user) => {
-    setHiddenUsers([...hiddenUsers, user]);
-    setDisplayedUsers(displayedUsers.filter((u) => u !== user));
+  const hideUser = (username) => {
+    setHiddenUsers([...hiddenUsers, username]);
+    setDisplayedUsers(displayedUsers.filter((u) => u.username !== username));
   };
 
   return (
@@ -91,6 +98,7 @@ const App = () => {
                 <Check className="text-yellow-400 ml-2" size={20} />
               )}
             </div>
+
             <div className="flex items-center w-full sm:w-auto">
               <input
                 type="file"
@@ -112,6 +120,7 @@ const App = () => {
               )}
             </div>
           </div>
+
           <div className="flex justify-center mt-4">
             <button
               onClick={processFiles}
@@ -121,6 +130,7 @@ const App = () => {
               Confirm and Process
             </button>
           </div>
+
           <div className="flex flex-col sm:flex-row justify-between items-center mt-4 sm:mt-6 space-y-4 sm:space-y-0">
             <div className="flex items-center bg-white bg-opacity-10 rounded-lg p-3 w-full sm:w-auto">
               <Users className="text-yellow-400 mr-2" size={20} />
@@ -141,20 +151,23 @@ const App = () => {
           {displayedUsers.map((user, index) => (
             <li key={index} className="group">
               <a
-                href={`https://instagram.com/${user}`}
+                href={user.href || `https://instagram.com/${user.username}`}
                 target="_blank"
                 rel="noreferrer"
                 className="block bg-white bg-opacity-5 rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 hover:bg-opacity-10"
                 onClick={(e) => {
                   e.preventDefault();
-                  hideUser(user);
-                  window.open(`https://instagram.com/${user}`, "_blank");
+                  hideUser(user.username);
+                  window.open(
+                    user.href || `https://instagram.com/${user.username}`,
+                    "_blank"
+                  );
                 }}
               >
                 <div className="p-4 sm:p-6">
                   <div className="flex justify-between items-center">
                     <span className="text-lg sm:text-xl font-bold text-yellow-400">
-                      {user}
+                      {user.username}
                     </span>
                     <UserCheck
                       className="text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
